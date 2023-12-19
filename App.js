@@ -3,14 +3,14 @@ import {
   Text,
   Platform,
   View,
-  Button,
   SafeAreaView,
-  Touchable,
+ 
   TouchableOpacity,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./src/components/Header";
 import Timer from "./src/components/Timer";
+import { Audio } from "expo-av";
 const Colors = ["#F7DC6F", "#A2D9CE", "#D7BDE2"];
 export default function App() {
   const [isWorking, setIsWorking] = useState(false);
@@ -18,13 +18,38 @@ export default function App() {
   const [currentTime, setCurrentTime] = useState(
     "Pomodoro" | "Short Break" | "Long Break"
   );
-
   const [isActive, setIsActive] = useState(false);
+  useEffect(() => {
+    let interval = null;
+    if (isActive) {
+      interval = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+    } else {
+      clearInterval(interval);
+    }
 
+    if (time===0) {
+      setIsActive(false);
+      setIsWorking((prev)=> !prev);
+      setTime(isWorking ? 300 :1500);
+
+    }
+
+    return () => clearInterval(interval);
+  }, [isActive, time]);
 
   function handleStart() {
+    playSound();
     setIsActive(!isActive);
   }
+  async function playSound() {
+    const { sound } = await Audio.Sound.createAsync(
+      require("./assets/clickme.mp3")
+    );
+    await sound.playAsync();
+  }
+
   return (
     <SafeAreaView
       style={[styles.container, { backgroundColor: Colors[currentTime] }]}
@@ -65,11 +90,11 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-   
+
     backgroundColor: "#333333",
     marginTop: 15,
     paddingTop: 15,
-    padding: 15, 
+    padding: 15,
     borderRadius: 15,
   },
 });
