@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import React from "react";
 
 const options = ["Pomodoro", "Short Break", "Long Break"];
-
+const Colorsfont = ["#ff9f43", "#00d2d3", "#ff9ff3"];
 export default function Header({ currentTime, setCurrentTime, setTime }) {
   //This code defines a function called handlesPress that takes an index parameter.
   //It sets a new time value based on the index: if the index is 0, the new time is 25; if the index is 1, the new time is 5; otherwise, the new time is 15.
@@ -24,7 +24,7 @@ export default function Header({ currentTime, setCurrentTime, setTime }) {
             styles.itemStyle,
             currentTime !== index
               ? { borderColor: "transparent" }
-              : { borderColor: "black", backgroundColor: "white" },
+              : { borderColor: "black", backgroundColor: Colorsfont[index] },
           ]}
         >
           <Text style={{ fontWeight: "bold" }}>{item}</Text>
